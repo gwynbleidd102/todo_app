@@ -37,7 +37,7 @@ export default class Task extends Component {
   };
   
   render() { 
-    const { task, onDeleted, onToggleCompleted, onTaskEdit } = this.props;
+    const { task, onDeleted, onToggleCompleted } = this.props;
     const { description, created, completed } = task;
     const { newDescription, editing } = this.state;
  
@@ -50,7 +50,7 @@ export default class Task extends Component {
     }
 
     return (
-      <li className={ completed ? 'completed' : '' }>
+      <li className={ classNames }>
         <div className="view">
           <input
             className="toggle"
@@ -65,8 +65,7 @@ export default class Task extends Component {
             </span>
           </label>
           <button className="icon icon-edit"
-                // onClick={ (this.editToggle) }
-                onClick={ () => onTaskEdit() } ></button>
+                onClick={ (this.editToggle) } ></button>
           <button className="icon icon-destroy" 
                 onClick={ onDeleted }></button>
         </div>
@@ -74,10 +73,9 @@ export default class Task extends Component {
           type="text"
           className="edit"
           value={ newDescription }
-          onInput={(elem) => {
+          onChange={(elem) => {
             this.setState({ newDescription: elem.target.value });
           }}
-          // onKeyDown={(e) => this.editTask(e)}
           onKeyDown={this.editTask}
         ></input>
       </li>

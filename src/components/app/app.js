@@ -11,10 +11,10 @@ export default class App extends Component {
 
   state  = {
     tasks : [
-      // this.addTask('Drink Coffee'),
-      // this.addTask('Make awesome app'),
-      // this.addTask('go out'),
-      // this.addTask('become happy'),
+      this.addTask('Drink Coffee'),
+      this.addTask('Make awesome app'),
+      this.addTask('go out'),
+      this.addTask('become happy'),
     ],
     currentFilter: 'all',
   }
