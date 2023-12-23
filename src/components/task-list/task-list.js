@@ -1,6 +1,7 @@
-import React from "react";
-import Task from "../task";
-import propTypes from 'prop-types';
+import React from 'react'
+import propTypes from 'prop-types'
+
+import Task from '../task';
 
 const TaskList = ({ tasks, onDeleted, onToggleCompleted, onTaskEdit }) => {
   return (
@@ -10,10 +11,10 @@ const TaskList = ({ tasks, onDeleted, onToggleCompleted, onTaskEdit }) => {
         if (!isVisible) return null;
         return (
           <Task
-            key={ id }
-            task={ task }
-            description={ description }
-            completed={ completed }
+            key={id}
+            task={task}
+            description={description}
+            completed={completed}
             onDeleted={() => onDeleted(id)}
             onToggleCompleted={() => onToggleCompleted(id)}
             onTaskEdit={(description) => onTaskEdit(id, description)}
@@ -32,16 +33,17 @@ TaskList.defaultProps = {
 }
 
 TaskList.propTypes = {
-  tasks: propTypes.arrayOf(propTypes.shape({
-    id: propTypes.number,
-    description: propTypes.string,
-    completed: propTypes.bool,
-    isVisible: propTypes.bool,
-  })),
+  tasks: propTypes.arrayOf(
+    propTypes.shape({
+      id: propTypes.number,
+      description: propTypes.string,
+      completed: propTypes.bool,
+      isVisible: propTypes.bool,
+    })
+  ),
   onDeleted: propTypes.func,
   onToggleCompleted: propTypes.func,
-  onTaskEdit: propTypes.func
+  onTaskEdit: propTypes.func,
 }
-
 
 export default TaskList;

@@ -1,10 +1,8 @@
-import React, { Component } from "react";
-import { formatDistanceToNow } from "date-fns";
+import React, { Component } from 'react'
+import { formatDistanceToNow } from 'date-fns'
 import propTypes from 'prop-types';
 
-
 export default class Task extends Component {
-
   static defaultProps = {
     onDeleted: () => {},
     onToggleCompleted: () => {},
@@ -17,12 +15,10 @@ export default class Task extends Component {
     onTaskEdit: propTypes.func,
   }
 
-
   state = {
     editing: false,
-    newDescription: this.props.description ,
-  };  
-
+    newDescription: this.props.description,
+  };
 
   editTask = (elem) => {
     if (elem.key === 'Enter') {
@@ -30,17 +26,16 @@ export default class Task extends Component {
       this.setState({ editing: false });
     }
   };
-  
 
   editToggle = () => {
     this.setState({ editing: true });
   };
-  
-  render() { 
+
+  render() {
     const { task, onDeleted, onToggleCompleted } = this.props;
     const { description, created, completed } = task;
     const { newDescription, editing } = this.state;
- 
+
     let classNames = 'description';
     if (completed) {
       classNames += ' completed';
@@ -50,29 +45,20 @@ export default class Task extends Component {
     }
 
     return (
-      <li className={ classNames }>
+      <li className={classNames}>
         <div className="view">
-          <input
-            className="toggle"
-            type="checkbox"
-            defaultChecked={ completed }
-            onClick={ onToggleCompleted }
-          />
+          <input className="toggle" type="checkbox" defaultChecked={completed} onClick={onToggleCompleted} />
           <label>
-            <span className={ classNames } > {description} </span>
-            <span className="created">
-              created {formatDistanceToNow(new Date(created), { addSuffix: true })}
-            </span>
+            <span className={classNames}> {description} </span>
+            <span className="created">created {formatDistanceToNow(new Date(created), { addSuffix: true })}</span>
           </label>
-          <button className="icon icon-edit"
-                onClick={ (this.editToggle) } ></button>
-          <button className="icon icon-destroy" 
-                onClick={ onDeleted }></button>
+          <button className="icon icon-edit" onClick={this.editToggle}></button>
+          <button className="icon icon-destroy" onClick={onDeleted}></button>
         </div>
         <input
           type="text"
           className="edit"
-          value={ newDescription }
+          value={newDescription}
           onChange={(elem) => {
             this.setState({ newDescription: elem.target.value });
           }}
@@ -81,6 +67,4 @@ export default class Task extends Component {
       </li>
     );
   }
-
-};
-
+}

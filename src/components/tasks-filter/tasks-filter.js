@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react'
 import propTypes from 'prop-types';
 
 const TasksFilter = ({ onChangeFilter }) => {
@@ -9,13 +9,13 @@ const TasksFilter = ({ onChangeFilter }) => {
   return (
     <ul className="filters">
       <li>
-        <button onClick={() => handleFilterChange("all")}>All</button>
+        <button onClick={() => handleFilterChange('all')}>All</button>
       </li>
       <li>
-        <button onClick={() => handleFilterChange("active")}>Active</button>
+        <button onClick={() => handleFilterChange('active')}>Active</button>
       </li>
       <li>
-        <button onClick={() => handleFilterChange("completed")}>Completed</button>
+        <button onClick={() => handleFilterChange('completed')}>Completed</button>
       </li>
     </ul>
   );
@@ -23,10 +23,10 @@ const TasksFilter = ({ onChangeFilter }) => {
 
 TasksFilter.defaulProps = {
   filter: () => {},
-}
+};
 
 TasksFilter.propTypes = {
   filter: propTypes.func,
-}
+};
 
 export default TasksFilter;

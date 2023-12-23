@@ -1,23 +1,21 @@
-import React, { Component } from "react";
+import React, { Component } from 'react'
 
 import NewTaskForm from '../new-task-form';
 import TaskList from '../task-list';
 import Footer from '../footer';
 
-
 export default class App extends Component {
-
   id = 0;
 
-  state  = {
-    tasks : [
+  state = {
+    tasks: [
       this.addTask('Drink Coffee'),
       this.addTask('Make awesome app'),
       this.addTask('go out'),
       this.addTask('become happy'),
     ],
     currentFilter: 'all',
-  }
+  };
 
   addTask(description) {
     return {
@@ -32,7 +30,7 @@ export default class App extends Component {
   createTask = (text) => {
     const newTask = this.addTask(text);
 
-    this.setState(({tasks}) => {
+    this.setState(({ tasks }) => {
       const newArray = [...tasks, newTask]
 
       return {
@@ -44,10 +42,8 @@ export default class App extends Component {
   deleteTask = (id) => {
     this.setState(({ tasks }) => {
       const idx = tasks.findIndex((elem) => elem.id === id)
-      
-      const newArray = [
-        ...tasks.slice(0, idx), ...tasks.slice(idx + 1)
-      ];
+
+      const newArray = [...tasks.slice(0, idx), ...tasks.slice(idx + 1)];
 
       return {
         tasks: newArray,
@@ -59,25 +55,21 @@ export default class App extends Component {
     const { tasks } = this.state;
     const newTasks = tasks.filter((task) => !task.completed);
     this.setState({
-      tasks: newTasks
+      tasks: newTasks,
     });
   };
 
   onToggleCompleted = (id) => {
     this.setState(({ tasks }) => {
       const idx = tasks.findIndex((elem) => elem.id === id)
-      
+
       const oldTask = tasks[idx];
       const newTask = {
-        ...oldTask, 
-        completed: !oldTask.completed
+        ...oldTask,
+        completed: !oldTask.completed,
       }
 
-      const newArray = [
-        ...tasks.slice(0, idx),
-        newTask,
-        ...tasks.slice(idx + 1)
-      ]
+      const newArray = [...tasks.slice(0, idx), newTask, ...tasks.slice(idx + 1)]
 
       return {
         tasks: newArray,
@@ -89,10 +81,9 @@ export default class App extends Component {
     this.setState({ currentFilter: filter });
 
     this.setState(({ tasks }) => {
-
       const filteredArray = tasks.map((task) => {
         let isVisible = true;
-        
+
         if (filter === 'active') {
           isVisible = !task.completed;
         }
@@ -114,11 +105,7 @@ export default class App extends Component {
       const idx = tasks.findIndex((elem) => elem.id === id);
       const editedTask = { ...tasks[idx], description: newDescription };
 
-      const editedArray = [
-        ...tasks.slice(0, idx),
-        editedTask,
-        ...tasks.slice(idx + 1)
-      ];
+      const editedArray = [...tasks.slice(0, idx), editedTask, ...tasks.slice(idx + 1)];
 
       return {
         tasks: editedArray,
@@ -131,19 +118,19 @@ export default class App extends Component {
 
     return (
       <section className="todoapp">
-        <NewTaskForm createTask={ this.createTask } />
+        <NewTaskForm createTask={this.createTask} />
         <section className="main">
           <TaskList
-            tasks={ tasks }
-            onDeleted={ this.deleteTask }
-            onToggleCompleted={ this.onToggleCompleted }
-            onTaskEdit={ this.onTaskEdit }
-            filter={ filter }
+            tasks={tasks}
+            onDeleted={this.deleteTask}
+            onToggleCompleted={this.onToggleCompleted}
+            onTaskEdit={this.onTaskEdit}
+            filter={filter}
           />
           <Footer
-            counter={ tasks.filter((elem) => !elem.completed).length }
-            onChangeFilter={ this.changeFilter }
-            onClearCompleted= { this.onClearCompleted }
+            counter={tasks.filter((elem) => !elem.completed).length}
+            onChangeFilter={this.changeFilter}
+            onClearCompleted={this.onClearCompleted}
           />
         </section>
       </section>
