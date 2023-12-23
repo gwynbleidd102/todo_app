@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 
 import NewTaskForm from '../new-task-form';
 import TaskList from '../task-list';
@@ -24,14 +24,14 @@ export default class App extends Component {
       created: new Date(),
       completed: false,
       isVisible: true,
-    }
+    };
   }
 
   createTask = (text) => {
     const newTask = this.addTask(text);
 
     this.setState(({ tasks }) => {
-      const newArray = [...tasks, newTask]
+      const newArray = [...tasks, newTask];
 
       return {
         tasks: newArray,
@@ -41,7 +41,7 @@ export default class App extends Component {
 
   deleteTask = (id) => {
     this.setState(({ tasks }) => {
-      const idx = tasks.findIndex((elem) => elem.id === id)
+      const idx = tasks.findIndex((elem) => elem.id === id);
 
       const newArray = [...tasks.slice(0, idx), ...tasks.slice(idx + 1)];
 
@@ -61,21 +61,21 @@ export default class App extends Component {
 
   onToggleCompleted = (id) => {
     this.setState(({ tasks }) => {
-      const idx = tasks.findIndex((elem) => elem.id === id)
+      const idx = tasks.findIndex((elem) => elem.id === id);
 
       const oldTask = tasks[idx];
       const newTask = {
         ...oldTask,
         completed: !oldTask.completed,
-      }
+      };
 
-      const newArray = [...tasks.slice(0, idx), newTask, ...tasks.slice(idx + 1)]
+      const newArray = [...tasks.slice(0, idx), newTask, ...tasks.slice(idx + 1)];
 
       return {
         tasks: newArray,
       };
     });
-  }
+  };
 
   changeFilter = (filter) => {
     this.setState({ currentFilter: filter });
@@ -91,14 +91,14 @@ export default class App extends Component {
           isVisible = task.completed;
         }
 
-        return { ...task, isVisible: isVisible }
-      })
+        return { ...task, isVisible: isVisible };
+      });
 
       return {
         tasks: filteredArray,
-      }
-    })
-  }
+      };
+    });
+  };
 
   onTaskEdit = (id, newDescription) => {
     this.setState(({ tasks }) => {
@@ -109,7 +109,7 @@ export default class App extends Component {
 
       return {
         tasks: editedArray,
-      }
+      };
     });
   };
 

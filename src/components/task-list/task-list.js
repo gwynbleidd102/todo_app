@@ -1,5 +1,5 @@
-import React from 'react'
-import propTypes from 'prop-types'
+import React from 'react';
+import propTypes from 'prop-types';
 
 import Task from '../task';
 
@@ -30,7 +30,7 @@ TaskList.defaultProps = {
   onDeleted: () => {},
   onToggleCompleted: () => {},
   onTaskEdit: () => {},
-}
+};
 
 TaskList.propTypes = {
   tasks: propTypes.arrayOf(
@@ -44,6 +44,6 @@ TaskList.propTypes = {
   onDeleted: propTypes.func,
   onToggleCompleted: propTypes.func,
   onTaskEdit: propTypes.func,
-}
+};
 
 export default TaskList;

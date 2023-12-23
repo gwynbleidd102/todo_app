@@ -1,7 +1,7 @@
-import React from 'react'
-import propTypes from 'prop-types'
+import React from 'react';
+import propTypes from 'prop-types';
 
-import TasksFilter from '../tasks-filter'
+import TasksFilter from '../tasks-filter';
 
 const Footer = ({ counter, onChangeFilter, onClearCompleted }) => {
   return (
@@ -19,12 +19,12 @@ Footer.defaultProps = {
   counter: 0,
   onChangeFilter: () => {},
   onClearCompleted: () => {},
-}
+};
 
 Footer.propTypes = {
   counter: propTypes.number,
   onChangeFilter: propTypes.func,
   onClearCompleted: propTypes.func,
-}
+};
 
 export default Footer;

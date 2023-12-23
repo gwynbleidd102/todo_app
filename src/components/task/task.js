@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { formatDistanceToNow } from 'date-fns'
+import React, { Component } from 'react';
+import { formatDistanceToNow } from 'date-fns';
 import propTypes from 'prop-types';
 
 export default class Task extends Component {
@@ -7,13 +7,13 @@ export default class Task extends Component {
     onDeleted: () => {},
     onToggleCompleted: () => {},
     onTaskEdit: () => {},
-  }
+  };
 
   static propTypes = {
     onDeleted: propTypes.func,
     onToggleCompleted: propTypes.func,
     onTaskEdit: propTypes.func,
-  }
+  };
 
   state = {
     editing: false,
@@ -41,7 +41,7 @@ export default class Task extends Component {
       classNames += ' completed';
     }
     if (editing) {
-      classNames += ' editing'
+      classNames += ' editing';
     }
 
     return (
