@@ -30,11 +30,24 @@ export default class App extends Component {
   createTask = (text) => {
     const newTask = this.addTask(text);
 
-    this.setState(({ tasks }) => {
+    this.setState(({ tasks, currentFilter }) => {
       const newArray = [...tasks, newTask];
 
+      const filteredArray = newArray.map((task) => {
+        let isVisible = true;
+
+        if (currentFilter === 'active') {
+          isVisible = !task.completed;
+        }
+        if (currentFilter === 'completed') {
+          isVisible = task.completed;
+        }
+
+        return { ...task, isVisible: isVisible };
+      });
+
       return {
-        tasks: newArray,
+        tasks: filteredArray,
       };
     });
   };
@@ -52,10 +65,10 @@ export default class App extends Component {
   };
 
   onClearCompleted = () => {
-    const { tasks } = this.state;
-    const newTasks = tasks.filter((task) => !task.completed);
-    this.setState({
-      tasks: newTasks,
+    this.setState(({ tasks }) => {
+      return {
+        tasks: [...tasks.filter((elem) => elem.completed === false)],
+      };
     });
   };
 

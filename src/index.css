@@ -41,6 +41,10 @@ body {
   font-weight: 300;
 }
 
+form {
+  margin: 0;
+}
+
 :focus {
   outline: 0;
 }

@@ -58,6 +58,7 @@ export default class Task extends Component {
         <input
           type="text"
           className="edit"
+          // autoFocus={true}
           value={newDescription}
           onChange={(elem) => {
             this.setState({ newDescription: elem.target.value });
