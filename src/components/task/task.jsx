@@ -7,12 +7,16 @@ export default class Task extends Component {
     onDeleted: () => {},
     onToggleCompleted: () => {},
     onTaskEdit: () => {},
+    startTimer: () => {},
+    pauseTimer: () => {},
   };
 
   static propTypes = {
     onDeleted: propTypes.func,
     onToggleCompleted: propTypes.func,
     onTaskEdit: propTypes.func,
+    startTimer: propTypes.func,
+    pauseTimer: propTypes.func,
   };
 
   state = {
@@ -32,7 +36,7 @@ export default class Task extends Component {
   };
 
   render() {
-    const { task, onDeleted, onToggleCompleted } = this.props;
+    const { task, onDeleted, onToggleCompleted, startTimer, pauseTimer, minutes, seconds } = this.props;
     const { description, created, completed } = task;
     const { newDescription, editing } = this.state;
 
@@ -50,6 +54,13 @@ export default class Task extends Component {
           <input className="toggle" type="checkbox" defaultChecked={completed} onClick={onToggleCompleted} />
           <label>
             <span className={classNames}> {description} </span>
+            <span className="created">
+              <button className="icon icon-play" type="button" onClick={startTimer}></button>
+              <button className="icon icon-pause" type="button" onClick={pauseTimer}></button>
+              <span className="timer-block">
+                {minutes}:{seconds}
+              </span>
+            </span>
             <span className="created">created {formatDistanceToNow(new Date(created), { addSuffix: true })}</span>
           </label>
           <button className="icon icon-edit" onClick={this.editToggle}></button>
@@ -58,7 +69,6 @@ export default class Task extends Component {
         <input
           type="text"
           className="edit"
-          // autoFocus={true}
           value={newDescription}
           onChange={(elem) => {
             this.setState({ newDescription: elem.target.value });

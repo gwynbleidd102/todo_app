@@ -5,30 +5,40 @@ import TaskList from '../task-list';
 import Footer from '../footer';
 
 export default class App extends Component {
-  id = 0;
+  constructor(props) {
+    super(props);
 
-  state = {
-    tasks: [
-      this.addTask('Drink Coffee'),
-      this.addTask('Make awesome app'),
-      this.addTask('go out'),
-      this.addTask('become happy'),
-    ],
-    currentFilter: 'all',
-  };
+    this.id = 0;
+    this.timerId = null;
 
-  addTask(description) {
+    this.state = {
+      tasks: [],
+      currentFilter: 'all',
+      isTimerOn: false,
+    };
+
+    this.startTimer = this.startTimer.bind(this);
+    this.pauseTimer = this.pauseTimer.bind(this);
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.timerId);
+  }
+
+  addTask(description, minutes, seconds) {
     return {
       id: this.id++,
       description,
       created: new Date(),
       completed: false,
       isVisible: true,
+      minutes,
+      seconds,
     };
   }
 
-  createTask = (text) => {
-    const newTask = this.addTask(text);
+  createTask = (text, minutes, seconds) => {
+    const newTask = this.addTask(text, minutes, seconds);
 
     this.setState(({ tasks, currentFilter }) => {
       const newArray = [...tasks, newTask];
@@ -51,6 +61,38 @@ export default class App extends Component {
       };
     });
   };
+
+  // функции для таймера подсказали с потока
+  startTimer(id) {
+    if (!this.state.isTimerOn) {
+      this.setState({ isTimerOn: true });
+      this.timerId = setInterval(() => {
+        this.setState((prevState) => {
+          const idx = prevState.tasks.findIndex((elem) => elem.id === id);
+          if (idx === -1) {
+            clearInterval(this.timerId);
+            return { tasks: prevState.tasks, isTimerOn: false };
+          }
+          const oldItem = prevState.tasks[idx];
+          let newItem = { ...oldItem, seconds: oldItem.seconds - 1 };
+          if (newItem.seconds < 0) {
+            newItem = { ...newItem, minutes: oldItem.minutes - 1, seconds: 59 };
+          }
+          if (newItem.seconds === 0 && newItem.minutes === 0) {
+            clearInterval(this.timerId);
+            return { tasks: prevState.tasks, isTimerOn: false };
+          }
+          const newData = [...prevState.tasks.slice(0, idx), newItem, ...prevState.tasks.slice(idx + 1)];
+          return { tasks: newData };
+        });
+      }, 1000);
+    }
+  }
+
+  pauseTimer() {
+    clearInterval(this.timerId);
+    this.setState({ isTimerOn: false });
+  }
 
   deleteTask = (id) => {
     this.setState(({ tasks }) => {
@@ -139,6 +181,8 @@ export default class App extends Component {
             onToggleCompleted={this.onToggleCompleted}
             onTaskEdit={this.onTaskEdit}
             filter={filter}
+            startTimer={(id) => this.startTimer(id)}
+            pauseTimer={() => this.pauseTimer()}
           />
           <Footer
             counter={tasks.filter((elem) => !elem.completed).length}
