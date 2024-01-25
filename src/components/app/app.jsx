@@ -62,32 +62,6 @@ export default class App extends Component {
     });
   };
 
-  // функции для таймера подсказали с потока
-  // startTimer(id) {
-  //   if (!this.state.isTimerOn) {
-  //     this.setState({ isTimerOn: true });
-  //     this.timerId = setInterval(() => {
-  //       this.setState((prevState) => {
-  //         const idx = prevState.tasks.findIndex((elem) => elem.id === id);
-  //         if (idx === -1) {
-  //           clearInterval(this.timerId);
-  //           return { tasks: prevState.tasks, isTimerOn: false };
-  //         }
-  //         const oldItem = prevState.tasks[idx];
-  //         let newItem = { ...oldItem, seconds: oldItem.seconds - 1 };
-  //         if (newItem.seconds < 0) {
-  //           newItem = { ...newItem, minutes: oldItem.minutes - 1, seconds: 59 };
-  //         }
-  //         if (newItem.seconds === 0 && newItem.minutes === 0) {
-  //           clearInterval(this.timerId);
-  //           return { tasks: prevState.tasks, isTimerOn: false };
-  //         }
-  //         const newData = [...prevState.tasks.slice(0, idx), newItem, ...prevState.tasks.slice(idx + 1)];
-  //         return { tasks: newData };
-  //       });
-  //     }, 1000);
-  //   }
-  // }
   startTimer(id) {
     if (!this.state.isTimerOn) {
       this.setState({ isTimerOn: true });
