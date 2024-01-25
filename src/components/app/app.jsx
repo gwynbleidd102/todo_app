@@ -1,33 +1,26 @@
-import React, { Component } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 
 import NewTaskForm from '../new-task-form';
 import TaskList from '../task-list';
 import Footer from '../footer';
 
-export default class App extends Component {
-  constructor(props) {
-    super(props);
+const App = () => {
+  const [tasks, setTasks] = useState([]);
+  const [currentFilter, setCurrentFilter] = useState('all');
+  const [isTimerOn, setIsTimerOn] = useState(false);
+  const [timerId, setTimerId] = useState(null);
 
-    this.id = 0;
-    this.timerId = null;
+  const idRef = useRef(0);
 
-    this.state = {
-      tasks: [],
-      currentFilter: 'all',
-      isTimerOn: false,
+  useEffect(() => {
+    return () => {
+      clearInterval(timerId);
     };
+  }, [timerId]);
 
-    this.startTimer = this.startTimer.bind(this);
-    this.pauseTimer = this.pauseTimer.bind(this);
-  }
-
-  componentWillUnmount() {
-    clearInterval(this.timerId);
-  }
-
-  addTask(description, minutes, seconds) {
+  const addTask = useCallback((description, minutes, seconds) => {
     return {
-      id: this.id++,
+      id: idRef.current++,
       description,
       created: new Date(),
       completed: false,
@@ -35,108 +28,109 @@ export default class App extends Component {
       minutes,
       seconds,
     };
-  }
+  }, []);
 
-  createTask = (text, minutes, seconds) => {
-    const newTask = this.addTask(text, minutes, seconds);
+  const createTask = useCallback(
+    (text, minutes, seconds) => {
+      const newTask = addTask(text, minutes, seconds);
 
-    this.setState(({ tasks, currentFilter }) => {
-      const newArray = [...tasks, newTask];
+      setTasks((prevTasks) => {
+        const newArray = [...prevTasks, newTask];
 
-      const filteredArray = newArray.map((task) => {
-        let isVisible = true;
+        const filteredArray = newArray.map((task) => {
+          let isVisible = true;
 
-        if (currentFilter === 'active') {
-          isVisible = !task.completed;
-        }
-        if (currentFilter === 'completed') {
-          isVisible = task.completed;
-        }
-
-        return { ...task, isVisible: isVisible };
-      });
-
-      return {
-        tasks: filteredArray,
-      };
-    });
-  };
-
-  // функции для таймера подсказали с потока
-  startTimer(id) {
-    if (!this.state.isTimerOn) {
-      this.setState({ isTimerOn: true });
-      this.timerId = setInterval(() => {
-        this.setState((prevState) => {
-          const idx = prevState.tasks.findIndex((elem) => elem.id === id);
-          if (idx === -1) {
-            clearInterval(this.timerId);
-            return { tasks: prevState.tasks, isTimerOn: false };
+          if (currentFilter === 'active') {
+            isVisible = !task.completed;
           }
-          const oldItem = prevState.tasks[idx];
-          let newItem = { ...oldItem, seconds: oldItem.seconds - 1 };
-          if (newItem.seconds < 0) {
-            newItem = { ...newItem, minutes: oldItem.minutes - 1, seconds: 59 };
+          if (currentFilter === 'completed') {
+            isVisible = task.completed;
           }
-          if (newItem.seconds === 0 && newItem.minutes === 0) {
-            clearInterval(this.timerId);
-            return { tasks: prevState.tasks, isTimerOn: false };
-          }
-          const newData = [...prevState.tasks.slice(0, idx), newItem, ...prevState.tasks.slice(idx + 1)];
-          return { tasks: newData };
+
+          return { ...task, isVisible };
         });
-      }, 1000);
-    }
-  }
 
-  pauseTimer() {
-    clearInterval(this.timerId);
-    this.setState({ isTimerOn: false });
-  }
+        return filteredArray;
+      });
+    },
+    [addTask, currentFilter]
+  );
 
-  deleteTask = (id) => {
-    this.setState(({ tasks }) => {
-      const idx = tasks.findIndex((elem) => elem.id === id);
+  const startTimer = useCallback(
+    (id) => {
+      if (!isTimerOn) {
+        setIsTimerOn(true);
+        setTimerId(
+          setInterval(() => {
+            setTasks((prevTasks) => {
+              const idx = prevTasks.findIndex((elem) => elem.id === id);
+              if (idx === -1) {
+                clearInterval(timerId);
+                setIsTimerOn(false);
+                return prevTasks;
+              }
+              const oldItem = prevTasks[idx];
+              let newItem = { ...oldItem, seconds: oldItem.seconds - 1 };
+              if (newItem.seconds < 0) {
+                newItem = { ...newItem, minutes: oldItem.minutes - 1, seconds: 59 };
+              }
+              if (newItem.seconds === 0 && newItem.minutes === 0) {
+                clearInterval(timerId);
+                setIsTimerOn(false);
+                return prevTasks;
+              }
+              const newData = [...prevTasks.slice(0, idx), newItem, ...prevTasks.slice(idx + 1)];
+              return newData;
+            });
+          }, 1000)
+        );
+      }
+    },
+    [isTimerOn, timerId]
+  );
 
-      const newArray = [...tasks.slice(0, idx), ...tasks.slice(idx + 1)];
+  const pauseTimer = useCallback(() => {
+    clearInterval(timerId);
+    setIsTimerOn(false);
+  }, [timerId]);
 
-      return {
-        tasks: newArray,
-      };
+  const deleteTask = useCallback((id) => {
+    setTasks((prevTasks) => {
+      const idx = prevTasks.findIndex((elem) => elem.id === id);
+
+      const newArray = [...prevTasks.slice(0, idx), ...prevTasks.slice(idx + 1)];
+
+      return newArray;
     });
-  };
+  }, []);
 
-  onClearCompleted = () => {
-    this.setState(({ tasks }) => {
-      return {
-        tasks: [...tasks.filter((elem) => elem.completed === false)],
-      };
+  const onClearCompleted = useCallback(() => {
+    setTasks((prevTasks) => {
+      return prevTasks.filter((elem) => !elem.completed);
     });
-  };
+  }, []);
 
-  onToggleCompleted = (id) => {
-    this.setState(({ tasks }) => {
-      const idx = tasks.findIndex((elem) => elem.id === id);
+  const onToggleCompleted = useCallback((id) => {
+    setTasks((prevTasks) => {
+      const idx = prevTasks.findIndex((elem) => elem.id === id);
 
-      const oldTask = tasks[idx];
+      const oldTask = prevTasks[idx];
       const newTask = {
         ...oldTask,
         completed: !oldTask.completed,
       };
 
-      const newArray = [...tasks.slice(0, idx), newTask, ...tasks.slice(idx + 1)];
+      const newArray = [...prevTasks.slice(0, idx), newTask, ...prevTasks.slice(idx + 1)];
 
-      return {
-        tasks: newArray,
-      };
+      return newArray;
     });
-  };
+  }, []);
 
-  changeFilter = (filter) => {
-    this.setState({ currentFilter: filter });
+  const changeFilter = useCallback((filter) => {
+    setCurrentFilter(filter);
 
-    this.setState(({ tasks }) => {
-      const filteredArray = tasks.map((task) => {
+    setTasks((prevTasks) => {
+      const filteredArray = prevTasks.map((task) => {
         let isVisible = true;
 
         if (filter === 'active') {
@@ -146,51 +140,45 @@ export default class App extends Component {
           isVisible = task.completed;
         }
 
-        return { ...task, isVisible: isVisible };
+        return { ...task, isVisible };
       });
 
-      return {
-        tasks: filteredArray,
-      };
+      return filteredArray;
     });
-  };
+  }, []);
 
-  onTaskEdit = (id, newDescription) => {
-    this.setState(({ tasks }) => {
-      const idx = tasks.findIndex((elem) => elem.id === id);
-      const editedTask = { ...tasks[idx], description: newDescription };
+  const onTaskEdit = useCallback((id, newDescription) => {
+    setTasks((prevTasks) => {
+      const idx = prevTasks.findIndex((elem) => elem.id === id);
+      const editedTask = { ...prevTasks[idx], description: newDescription };
 
-      const editedArray = [...tasks.slice(0, idx), editedTask, ...tasks.slice(idx + 1)];
+      const editedArray = [...prevTasks.slice(0, idx), editedTask, ...prevTasks.slice(idx + 1)];
 
-      return {
-        tasks: editedArray,
-      };
+      return editedArray;
     });
-  };
+  }, []);
 
-  render() {
-    const { tasks, currentFilter: filter } = this.state;
-
-    return (
-      <section className="todoapp">
-        <NewTaskForm createTask={this.createTask} />
-        <section className="main">
-          <TaskList
-            tasks={tasks}
-            onDeleted={this.deleteTask}
-            onToggleCompleted={this.onToggleCompleted}
-            onTaskEdit={this.onTaskEdit}
-            filter={filter}
-            startTimer={(id) => this.startTimer(id)}
-            pauseTimer={() => this.pauseTimer()}
-          />
-          <Footer
-            counter={tasks.filter((elem) => !elem.completed).length}
-            onChangeFilter={this.changeFilter}
-            onClearCompleted={this.onClearCompleted}
-          />
-        </section>
+  return (
+    <section className="todoapp">
+      <NewTaskForm createTask={createTask} />
+      <section className="main">
+        <TaskList
+          tasks={tasks}
+          onDeleted={deleteTask}
+          onToggleCompleted={onToggleCompleted}
+          onTaskEdit={onTaskEdit}
+          filter={currentFilter}
+          startTimer={(id) => startTimer(id)}
+          pauseTimer={() => pauseTimer()}
+        />
+        <Footer
+          counter={tasks.filter((elem) => !elem.completed).length}
+          onChangeFilter={changeFilter}
+          onClearCompleted={onClearCompleted}
+        />
       </section>
-    );
-  }
-}
+    </section>
+  );
+};
+
+export default App;
