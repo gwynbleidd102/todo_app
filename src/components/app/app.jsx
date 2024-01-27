@@ -56,39 +56,6 @@ const App = () => {
     [addTask, currentFilter]
   );
 
-  // const startTimer = useCallback(
-  //   (id) => {
-  //     if (!isTimerOn) {
-  //       setIsTimerOn(true);
-  //       setTimerId(
-  //         setInterval(() => {
-  //           setTasks((prevTasks) => {
-  //             const idx = prevTasks.findIndex((elem) => elem.id === id);
-  //             if (idx === -1) {
-  //               clearInterval(timerId);
-  //               setIsTimerOn(false);
-  //               return prevTasks;
-  //             }
-  //             const oldItem = prevTasks[idx];
-  //             let newItem = { ...oldItem, seconds: oldItem.seconds - 1 };
-  //             if (newItem.seconds < 0) {
-  //               newItem = { ...newItem, minutes: oldItem.minutes - 1, seconds: 59 };
-  //             }
-  //             if (newItem.seconds === 0 && newItem.minutes === 0) {
-  //               clearInterval(timerId);
-  //               setIsTimerOn(false);
-  //               return prevTasks;
-  //             }
-  //             const newData = [...prevTasks.slice(0, idx), newItem, ...prevTasks.slice(idx + 1)];
-  //             return newData;
-  //           });
-  //         }, 1000)
-  //       );
-  //     }
-  //   },
-  //   [isTimerOn, timerId]
-  // );
-
   const startTimer = useCallback(
     (id) => {
       if (!isTimerOn) {
